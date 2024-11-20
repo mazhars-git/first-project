@@ -16,4 +16,22 @@ const studentSchema = new Schema<Student>({
       required: true,
     },
   },
+  gender: ['male', 'female'],
+  dateOfBirth: { type: String },
+  email: {
+    type: String,
+    required: true,
+  },
+  contact: {
+    type: String,
+    required: true,
+  },
+  emergencyContact: { type: String, required: true },
+  bloodGroup: ['A+', 'A-', 'B+', 'B-'],
+  presentAddress: { type: String, required: true },
+  permanentAddress: { type: String, required: true },
+  guardian: {},
+  localGuardian: {},
+  profileImg: { type: String },
+  isActive: ['active', 'inActive'],
 });
