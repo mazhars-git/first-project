@@ -40,6 +40,10 @@ const studentZodValidationSchema = z.object({
     .string()
     .min(1, { message: 'ID is required' })
     .max(255, { message: 'ID can be a maximum of 255 characters' }),
+  password: z
+    .string()
+    .min(1, { message: 'ID is required' })
+    .max(20, { message: 'Pass can be a maximum of 20 characters' }),
   name: userNameZodSchema,
   gender: z.enum(['male', 'female', 'other']),
   dateOfBirth: z.string().optional(),
