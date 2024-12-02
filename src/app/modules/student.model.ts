@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose';
-import bcrypt from 'bcrypt';
 
 // import validator from 'validator';
 
@@ -10,7 +9,6 @@ import {
   TStudent,
   TUserName,
 } from './student/student.interface';
-import config from '../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -63,7 +61,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       unique: true,
       ref: 'User',
     },
-    password: { type: String, required: true },
     name: {
       type: userNameSchema,
       required: true,
@@ -81,10 +78,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: String,
       required: true,
       unique: true,
-      // validate: {
-      //   validator: (value: string) => validator.isEmail(value),
-      //   message: `{VALUE} is not valid`,
-      // },
     },
     contact: {
       type: String,
@@ -123,28 +116,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
 studentSchema.virtual('fullName').get(function () {
   return `${this.name.firstName} ${this.name.midName} ${this.name.lastName}`;
 });
-// pre save middleware/hook: will work on create() function
-
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'pre hook: we will save data');
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  // hashing pass
-
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
-
-// post save middleware
-
-studentSchema.post('save', function (doc, next) {
-  doc.password = ' ';
-
-  next();
-});
 
 // Query middleware
 
@@ -172,12 +143,5 @@ studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
 };
-
-// create a custom instance method
-
-// studentSchema.methods.isUserExists = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-//   return existingUser;
-// };
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
