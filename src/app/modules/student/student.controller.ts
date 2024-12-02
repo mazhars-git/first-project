@@ -2,7 +2,6 @@
 import { Request, Response } from 'express';
 import { StudentService } from './student.service';
 // import studentValidationSchema from './student.validation';
-import { z } from 'zod';
 import studentZodValidationSchema from './student.validation';
 
 const createStudent = async (req: Request, res: Response) => {
@@ -86,7 +85,7 @@ const deleteStudent = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'student deleted successfully',
-      data: result,
+      data: {},
     });
   } catch (err: any) {
     res.status(500).json({
