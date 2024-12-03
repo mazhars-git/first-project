@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import { StudentService } from './student.service';
 import sendResponse from '../../utils/sendRes';
 import httpStatus from 'http-status';
 
-const getAllStudents = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const getAllStudents: RequestHandler = async (req, res, next) => {
   try {
     const result = await StudentService.getAllStudentsFromDB();
     sendResponse(res, {
@@ -23,11 +19,7 @@ const getAllStudents = async (
   }
 };
 
-const getSingleStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const getSingleStudent: RequestHandler = async (req, res, next) => {
   try {
     const { studentId } = req.params;
     const result = await StudentService.getSingleStudentsFromDB(studentId);
@@ -44,11 +36,7 @@ const getSingleStudent = async (
 
 // delete
 
-const deleteStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const deleteStudent: RequestHandler = async (req, res, next) => {
   try {
     const { studentId } = req.params;
 
