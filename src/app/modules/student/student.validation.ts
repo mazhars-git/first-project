@@ -35,43 +35,41 @@ const localGuardianZodSchema = z.object({
 });
 
 // Student Zod Schema
-const studentZodValidationSchema = z.object({
-  id: z
-    .string()
-    .min(1, { message: 'ID is required' })
-    .max(255, { message: 'ID can be a maximum of 255 characters' }),
-  password: z
-    .string()
-    .min(1, { message: 'ID is required' })
-    .max(20, { message: 'Pass can be a maximum of 20 characters' }),
-  name: userNameZodSchema,
-  gender: z.enum(['male', 'female', 'other']),
-  dateOfBirth: z.string().optional(),
-  email: z
-    .string()
-    .email({ message: 'Invalid email format' })
-    .min(1, { message: 'Email is required' })
-    .max(255, { message: 'Email can be a maximum of 255 characters' }),
-  contact: z
-    .string()
-    .min(1, { message: 'Contact is required' })
-    .max(255, { message: 'Contact can be a maximum of 255 characters' }),
-  emergencyContact: z
-    .string()
-    .min(1, { message: 'Emergency contact is required' })
-    .max(255, {
-      message: 'Emergency contact can be a maximum of 255 characters',
+export const createStudentValidationSchema = z.object({
+  body: z.object({
+    password: z
+      .string()
+      .min(1, { message: 'ID is required' })
+      .max(20, { message: 'Pass can be a maximum of 20 characters' }),
+    student: z.object({
+      name: userNameZodSchema,
+      gender: z.enum(['male', 'female', 'other']),
+      dateOfBirth: z.string().optional(),
+      email: z
+        .string()
+        .email({ message: 'Invalid email format' })
+        .min(1, { message: 'Email is required' })
+        .max(255, { message: 'Email can be a maximum of 255 characters' }),
+      contact: z
+        .string()
+        .min(1, { message: 'Contact is required' })
+        .max(255, { message: 'Contact can be a maximum of 255 characters' }),
+      emergencyContact: z
+        .string()
+        .min(1, { message: 'Emergency contact is required' })
+        .max(255, {
+          message: 'Emergency contact can be a maximum of 255 characters',
+        }),
+      bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-']).optional(),
+      presentAddress: z
+        .string()
+        .min(1, { message: 'Present address is required' }),
+      permanentAddress: z
+        .string()
+        .min(1, { message: 'Permanent address is required' }),
+      guardian: guardianZodSchema,
+      localGuardian: localGuardianZodSchema,
+      profileImg: z.string().optional(),
     }),
-  bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-']).optional(),
-  presentAddress: z.string().min(1, { message: 'Present address is required' }),
-  permanentAddress: z
-    .string()
-    .min(1, { message: 'Permanent address is required' }),
-  guardian: guardianZodSchema,
-  localGuardian: localGuardianZodSchema,
-  profileImg: z.string().optional(),
-  isActive: z.enum(['active', 'blocked']).default('active'),
-  isDeleted: z.boolean(),
+  }),
 });
-
-export default studentZodValidationSchema;
