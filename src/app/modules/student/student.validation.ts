@@ -37,14 +37,10 @@ const localGuardianZodSchema = z.object({
 // Student Zod Schema
 export const createStudentValidationSchema = z.object({
   body: z.object({
-    password: z
-      .string()
-      .min(1, { message: 'ID is required' })
-      .max(20, { message: 'Pass can be a maximum of 20 characters' }),
     student: z.object({
       name: userNameZodSchema,
       gender: z.enum(['male', 'female', 'other']),
-      dateOfBirth: z.date().optional(),
+      dateOfBirth: z.string().optional(),
       email: z
         .string()
         .email({ message: 'Invalid email format' })
