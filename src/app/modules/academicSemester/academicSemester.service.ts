@@ -9,7 +9,22 @@ const createAcademicSemesterIntoDB = async (payLoad: TAcademicSemester) => {
   const result = await AcademicSemester.create(payLoad);
   return result;
 };
+const getSingleAcademicSemesterFromDB = async (payLoad: TAcademicSemester) => {
+  const result = await AcademicSemester.findOne(payLoad);
+  return result;
+};
+const getAllAcademicSemestersFromDB = async (payLoad: TAcademicSemester) => {
+  const result = await AcademicSemester.find(payLoad);
+  return result;
+};
+const updateAcademicSemestersInDB = async (payLoad: TAcademicSemester) => {
+  const result = await AcademicSemester.find(payLoad);
+  return result;
+};
 
 export const AcademicSemesterServices = {
   createAcademicSemesterIntoDB,
+  getSingleAcademicSemesterFromDB,
+  getAllAcademicSemestersFromDB,
+  updateAcademicSemestersInDB,
 };
