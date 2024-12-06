@@ -9,16 +9,28 @@ const createAcademicSemesterIntoDB = async (payLoad: TAcademicSemester) => {
   const result = await AcademicSemester.create(payLoad);
   return result;
 };
-const getSingleAcademicSemesterFromDB = async (payLoad: TAcademicSemester) => {
-  const result = await AcademicSemester.findOne(payLoad);
+const getSingleAcademicSemesterFromDB = async (id: string) => {
+  const result = await AcademicSemester.findById(id);
   return result;
 };
-const getAllAcademicSemestersFromDB = async (payLoad: TAcademicSemester) => {
-  const result = await AcademicSemester.find(payLoad);
+const getAllAcademicSemestersFromDB = async () => {
+  const result = await AcademicSemester.find();
   return result;
 };
-const updateAcademicSemestersInDB = async (payLoad: TAcademicSemester) => {
-  const result = await AcademicSemester.find(payLoad);
+const updateAcademicSemestersInDB = async (
+  id: string,
+  payLoad: Partial<TAcademicSemester>,
+) => {
+  if (
+    payLoad.name &&
+    payLoad.code &&
+    academicSemesterNameCodeMapper[payLoad.name] !== payLoad.code
+  ) {
+    throw new Error('Invalid Semester Code');
+  }
+  const result = await AcademicSemester.findOneAndUpdate({ _id: id }, payLoad, {
+    new: true,
+  });
   return result;
 };
 
