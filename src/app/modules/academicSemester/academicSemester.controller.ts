@@ -41,6 +41,7 @@ const updateAcademicSemester = catchAsync(async (req, res) => {
     semesterId,
     req.body,
   );
+  console.log(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

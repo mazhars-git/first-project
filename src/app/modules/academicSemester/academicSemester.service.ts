@@ -28,7 +28,7 @@ const updateAcademicSemestersInDB = async (
   ) {
     throw new Error('Invalid Semester Code');
   }
-  const result = await AcademicSemester.findOneAndUpdate({ _id: id }, payLoad, {
+  const result = await AcademicSemester.findOneAndUpdate({ id: id }, payLoad, {
     new: true,
   });
   return result;
