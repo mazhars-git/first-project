@@ -6,12 +6,20 @@ const findLastStudentId = async () => {
     {
       role: 'student',
     },
-    {},
-  );
+    {
+      id: 1,
+      _id: 0,
+    },
+  )
+    .sort({
+      createdAt: -1,
+    })
+    .lean();
+  return lastStudent?.id ? lastStudent.id.substring(6) : undefined;
 };
 
-export const generateStudentId = (payLoad: TAcademicSemester) => {
-  const currentId = (0).toString();
+export const generateStudentId = async (payLoad: TAcademicSemester) => {
+  const currentId = (await findLastStudentId()) || (0).toString();
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
   incrementId = `${payLoad.year}${payLoad.code}${incrementId}`;
 
