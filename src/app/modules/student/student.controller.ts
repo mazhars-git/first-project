@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { StudentService } from './student.service';
+import { StudentServices } from './student.service';
 import sendResponse from '../../utils/sendRes';
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 
 // get all students
 const getAllStudents = catchAsync(async (req, res) => {
-  const result = await StudentService.getAllStudentsFromDB();
+  const result = await StudentServices.getAllStudentsFromDB();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -18,7 +18,7 @@ const getAllStudents = catchAsync(async (req, res) => {
 // get single student
 const getSingleStudent = catchAsync(async (req, res) => {
   const { studentId } = req.params;
-  const result = await StudentService.getSingleStudentsFromDB(studentId);
+  const result = await StudentServices.getSingleStudentsFromDB(studentId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -27,11 +27,25 @@ const getSingleStudent = catchAsync(async (req, res) => {
   });
 });
 
+// update student
+
+const updateStudent = catchAsync(async (req, res) => {
+  const { studentId } = req.params;
+  const { student } = req.body;
+  const result = await StudentServices.updateStudentIntoDB(studentId, student);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student is updated successfully',
+    data: result,
+  });
+});
+
 // delete student
 
 const deleteStudent = catchAsync(async (req, res) => {
   const { studentId } = req.params;
-  const result = await StudentService.deleteStudentsFromDB(studentId);
+  const result = await StudentServices.deleteStudentsFromDB(studentId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -43,5 +57,6 @@ const deleteStudent = catchAsync(async (req, res) => {
 export const StudentControllers = {
   getAllStudents,
   getSingleStudent,
+  updateStudent,
   deleteStudent,
 };
