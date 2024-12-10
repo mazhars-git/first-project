@@ -7,8 +7,8 @@ const createUserNameValidationSchema = z.object({
     .min(1, { message: 'First name is required' })
     .max(20, { message: 'Max length is 20' })
     .trim(),
-  midName: z.string().trim().optional(),
-  lastName: z.string().min(1, { message: 'Last name is required' }).trim(),
+  midName: z.string(),
+  lastName: z.string(),
 });
 
 // Guardian Zod Schema
@@ -27,11 +27,10 @@ const createGuardianValidationSchema = z.object({
 
 // Local Guardian Zod Schema
 const createLocalGuardianValidationSchema = z.object({
-  name: z.string().min(1, { message: 'Local guardian name is required' }),
-  occupation: z
-    .string()
-    .min(1, { message: 'Local guardian occupation is required' }),
-  address: z.string().min(1, { message: 'Local guardian address is required' }),
+  name: z.string(),
+  occupation: z.string(),
+  contactNo: z.string(),
+  address: z.string(),
 });
 
 // Student Zod Schema
@@ -75,57 +74,27 @@ export const createStudentValidationSchema = z.object({
 // Update Validation Schema
 // Update Validation Schema
 const updateUserNameValidationSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, { message: 'First name is required' })
-    .max(20, { message: 'Max length is 20' })
-    .optional(),
+  firstName: z.string().min(1).max(20).optional(),
   midName: z.string().optional(),
-  lastName: z.string().min(1, { message: 'Last name is required' }).optional(),
+  lastName: z.string().optional(),
 });
 
 // Guardian Zod Schema
 const updateGuardianValidationSchema = z.object({
-  fatherName: z
-    .string()
-    .min(1, { message: 'Father name is required' })
-    .optional(),
-  fatherOccupation: z
-    .string()
-    .min(1, { message: 'Father occupation is required' })
-    .optional(),
-  fatherContact: z
-    .string()
-    .min(1, { message: 'Father contact is required' })
-    .optional(),
-  motherName: z
-    .string()
-    .min(1, { message: 'Mother name is required' })
-    .optional(),
-  motherOccupation: z
-    .string()
-    .min(1, { message: 'Mother occupation is required' })
-    .optional(),
-  motherContact: z
-    .string()
-    .min(1, { message: 'Mother contact is required' })
-    .optional(),
+  fatherName: z.string().optional(),
+  fatherOccupation: z.string().optional(),
+  fatherContactNo: z.string().optional(),
+  motherName: z.string().optional(),
+  motherOccupation: z.string().optional(),
+  motherContactNo: z.string().optional(),
 });
 
 // Local Guardian Zod Schema
 const updateLocalGuardianValidationSchema = z.object({
-  name: z
-    .string()
-    .min(1, { message: 'Local guardian name is required' })
-    .optional(),
-  occupation: z
-    .string()
-    .min(1, { message: 'Local guardian occupation is required' })
-    .optional(),
-  address: z
-    .string()
-    .min(1, { message: 'Local guardian address is required' })
-    .optional(),
+  name: z.string().optional(),
+  occupation: z.string().optional(),
+  contactNo: z.string().optional(),
+  address: z.string().optional(),
 });
 
 // Student Zod Schema
