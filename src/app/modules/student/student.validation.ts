@@ -45,7 +45,7 @@ export const createStudentValidationSchema = z.object({
         .email({ message: 'Invalid email format' })
         .min(1, { message: 'Email is required' })
         .max(255, { message: 'Email can be a maximum of 255 characters' }),
-      contact: z
+      contactNo: z
         .string()
         .min(1, { message: 'Contact is required' })
         .max(255, { message: 'Contact can be a maximum of 255 characters' }),

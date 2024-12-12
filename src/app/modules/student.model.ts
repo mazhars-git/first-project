@@ -79,7 +79,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: true,
       unique: true,
     },
-    contact: {
+    contactNo: {
       type: String,
       required: true,
     },
