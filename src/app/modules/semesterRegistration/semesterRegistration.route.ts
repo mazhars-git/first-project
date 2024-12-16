@@ -13,11 +13,19 @@ router.post(
   SemesterRegistrationControllers.createSemesterRegistration,
 );
 
-// router.patch(
-//   '/:id',
-//   validateRequest(CourseValidations.updateCourseValidationSchema),
-//   CourseController.updateCourse,
-// );
-// router.get('/', CourseController.getAllCourses);
+router.get('/', SemesterRegistrationControllers.getAllSemesterRegistration);
+
+router.get(
+  '/:id',
+  SemesterRegistrationControllers.getSingleSemesterRegistration,
+);
+
+router.patch(
+  '/:id',
+  validateRequest(
+    SemesterRegistrationValidations.updateSemesterRegistrationValidationSchema,
+  ),
+  SemesterRegistrationControllers.updateSemesterRegistration,
+);
 
 export const SemesterRegistrationRoutes = router;
