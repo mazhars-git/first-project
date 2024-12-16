@@ -1,4 +1,5 @@
 import AppError from '../../errors/appErrors';
+import httpStatus from 'http-status';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { TSemesterRegistration } from './semesterRegistration.interface';
 import { SemesterRegistration } from './semesterRegistration.model';
@@ -23,7 +24,7 @@ const createSemesterRegistrationIntoDB = async (
     academicSemester,
   });
 
-  if (!isSemesterRegistrationExists) {
+  if (isSemesterRegistrationExists) {
     throw new AppError(
       httpStatus.CONFLICT,
       'This semester is already registered!',

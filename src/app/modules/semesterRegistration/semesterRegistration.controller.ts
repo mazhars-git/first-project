@@ -1,9 +1,21 @@
-import { Request, Response } from 'express';
 import catchAsync from '../../utils/catchAsync';
-import { SemesterRegistration } from './semesterRegistration.model';
+import httpStatus from 'http-status';
+import { SemesterRegistrationServices } from './semesterRegistration.service';
+import sendResponse from '../../utils/sendRes';
 
-const createSemesterRegistration = catchAsync(
-  async (req: Request, res: Response) => {
-    const result = await SemesterRegistration.create();
-  },
-);
+const createSemesterRegistration = catchAsync(async (req, res) => {
+  const result =
+    await SemesterRegistrationServices.createSemesterRegistrationIntoDB(
+      req.body,
+    );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Course is created successfully',
+    data: result,
+  });
+});
+
+export const SemesterRegistrationControllers = {
+  createSemesterRegistration,
+};
