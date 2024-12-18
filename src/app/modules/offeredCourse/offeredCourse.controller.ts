@@ -3,7 +3,7 @@ import sendResponse from '../../utils/sendRes';
 import httpStatus from 'http-status';
 import { OfferedCourseServices } from './offeredCourse.service';
 
-const createOfferedCourse = catchAsync(async (req: Request, res: Response) => {
+const createOfferedCourse = catchAsync(async (req, res) => {
   const result = await OfferedCourseServices.createOfferedCourseIntoDB(
     req.body,
   );
@@ -15,6 +15,6 @@ const createOfferedCourse = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const OfferedCouseController = {
+export const OfferedCourseController = {
   createOfferedCourse,
 };
