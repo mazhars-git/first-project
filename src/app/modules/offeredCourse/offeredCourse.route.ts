@@ -10,11 +10,12 @@ router.post(
   OfferedCourseController.createOfferedCourse,
 );
 
-// router.patch(
-//   '/:id',
-//   validateRequest(CourseValidations.updateCourseValidationSchema),
-//   CourseController.updateCourse,
-// );
+router.patch(
+  '/:id',
+  validateRequest(OfferedCourseValidations.updateOfferedCourseValidationSchema),
+  OfferedCourseController.updateOfferedCourse,
+);
+
 // router.get('/', CourseController.getAllCourses);
 
 // router.get('/:id', CourseController.getSingleCourse);
