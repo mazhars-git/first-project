@@ -15,10 +15,6 @@ const router = Router();
 
 const moduleRouters = [
   {
-    path: '/admins',
-    route: AdminRoutes,
-  },
-  {
     path: '/users',
     route: UserRoutes,
   },
@@ -29,6 +25,10 @@ const moduleRouters = [
   {
     path: '/faculties',
     route: FacultyRoutes,
+  },
+  {
+    path: '/admins',
+    route: AdminRoutes,
   },
   {
     path: '/academic-semesters',
