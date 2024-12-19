@@ -26,8 +26,8 @@ const createFaculty = catchAsync(async (req, res) => {
 });
 
 const createAdmin = catchAsync(async (req, res) => {
-  const { password, faculty: adminData } = req.body;
-  const result = await UserServices.createFacultyIntoDB(password, adminData);
+  const { password, admin: adminData } = req.body;
+  const result = await UserServices.createAdminIntoDB(password, adminData);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
