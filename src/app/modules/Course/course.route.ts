@@ -2,15 +2,18 @@ import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
 import { CourseValidations } from './course.validation';
 import { CourseController } from './course.controller';
+import auth from '../../middlewares/auth';
 const router = express.Router();
 
 router.post(
   '/create-course',
+  auth('admin'),
   validateRequest(CourseValidations.createCourseValidationSchema),
   CourseController.createCourse,
 );
 router.patch(
   '/:id',
+  auth('admin'),
   validateRequest(CourseValidations.updateCourseValidationSchema),
   CourseController.updateCourse,
 );
