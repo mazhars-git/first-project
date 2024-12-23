@@ -26,8 +26,9 @@ const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
 
   userData.password = password || (config.default_password as string);
 
-  // set user role
+  // set user role and email
   userData.role = 'student';
+  userData.email = payLoad.email;
 
   const admissionSemester = await AcademicSemester.findById(
     payLoad.admissionSemester,
@@ -70,7 +71,7 @@ const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
 
 // create faculty
 
-const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
+const createFacultyIntoDB = async (password: string, payLoad: TFaculty) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
@@ -79,10 +80,11 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 
   //set student role
   userData.role = 'faculty';
+  userData.email = payLoad.email;
 
   // find academic department info
   const academicDepartment = await AcademicDepartment.findById(
-    payload.academicDepartment,
+    payLoad.academicDepartment,
   );
 
   if (!academicDepartment) {
@@ -104,12 +106,12 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
     }
     // set id , _id as user
-    payload.id = newUser[0].id;
-    payload.user = newUser[0]._id; //reference _id
+    payLoad.id = newUser[0].id;
+    payLoad.user = newUser[0]._id; //reference _id
 
     // create a faculty (transaction-2)
 
-    const newFaculty = await Faculty.create([payload], { session });
+    const newFaculty = await Faculty.create([payLoad], { session });
 
     if (!newFaculty.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create faculty');
@@ -128,15 +130,16 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 
 // create admin into db
 
-const createAdminIntoDB = async (password: string, payload: TAdmin) => {
+const createAdminIntoDB = async (password: string, payLoad: TAdmin) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
   //if password is not given , use deafult password
   userData.password = password || (config.default_password as string);
 
-  //set student role
+  //set admin role and email
   userData.role = 'admin';
+  userData.email = payLoad.email;
 
   const session = await mongoose.startSession();
 
@@ -153,11 +156,11 @@ const createAdminIntoDB = async (password: string, payload: TAdmin) => {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create admin');
     }
     // set id , _id as user
-    payload.id = newUser[0].id;
-    payload.user = newUser[0]._id; //reference _id
+    payLoad.id = newUser[0].id;
+    payLoad.user = newUser[0]._id; //reference _id
 
     // create a admin (transaction-2)
-    const newAdmin = await Admin.create([payload], { session });
+    const newAdmin = await Admin.create([payLoad], { session });
 
     if (!newAdmin.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create admin');

@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import { createToken } from './auth.utils';
+import { sendEmail } from '../../utils/sendEmail';
 
 const loginUserInDB = async (payLoad: TLoginUser) => {
   const user = await User.isUserExistsByCustomId(payLoad.id);
@@ -182,7 +183,20 @@ const forgetPassword = async (userId: string) => {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked!');
   }
 
-  const resetUiLink = `http://localhost:3000?id={}`;
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  const resetToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    '10m',
+  );
+
+  const resetUiLink = `http://localhost:3000?id=${user.id}&token=${resetToken}`;
+  sendEmail();
+  console.log(resetUiLink);
 };
 
 export const AuthServices = {
