@@ -180,23 +180,28 @@ const createAdminIntoDB = async (password: string, payLoad: TAdmin) => {
 
 // get me
 
-const getMe = async (token: string) => {
-  const decoded = verifyToken(token, config.jwt_access_secret as string);
-  const { userId, role } = decoded;
-  console.log(userId, role);
+const getMe = async (userId: string, role: string) => {
+  // const decoded = verifyToken(token, config.jwt_access_secret as string);
+  // const { userId, role } = decoded;
+  // console.log(userId, role);
 
   let result = null;
   if (role === 'student') {
-    result = await Student.findOne({ id: userId });
+    result = await Student.findOne({ id: userId }).populate('user');
   }
   if (role === 'admin') {
-    result = await Admin.findOne({ id: userId });
+    result = await Admin.findOne({ id: userId }).populate('user');
   }
   if (role === 'faculty') {
-    result = await Faculty.findOne({ id: userId });
+    result = await Faculty.findOne({ id: userId }).populate('user');
   }
 
   // const result = await
+  return result;
+};
+
+const changeStatus = async (id: string, payLoad: { status: string }) => {
+  const result = await User.findByIdAndUpdate(id, payLoad, { new: true });
   return result;
 };
 
@@ -205,4 +210,5 @@ export const UserServices = {
   createFacultyIntoDB,
   createAdminIntoDB,
   getMe,
+  changeStatus,
 };
