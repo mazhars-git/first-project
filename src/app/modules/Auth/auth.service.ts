@@ -30,7 +30,7 @@ const loginUserInDB = async (payLoad: TLoginUser) => {
 
   // checking the password is correct
 
-  if (!User.isPasswordMatched(payLoad?.password, user?.password)) {
+  if (!(await User.isPasswordMatched(payLoad?.password, user?.password))) {
     throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched!');
   }
 
@@ -194,10 +194,64 @@ const forgetPassword = async (userId: string) => {
     '10m',
   );
 
-  const resetUiLink = `http://localhost:3000?id=${user.id}&token=${resetToken}`;
+  const resetUiLink = `${config.reset_pass_ui_link}?id=${user.id}&token=${resetToken}`;
   sendEmail(user.email, resetUiLink);
 
   console.log(resetUiLink);
+};
+
+const resetPassword = async (
+  payLoad: { id: string; newPassword: string },
+  token: string,
+) => {
+  // checking user is exist
+  const user = await User.isUserExistsByCustomId(payLoad?.id);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
+  }
+
+  // // checking if the user is already deleted
+
+  const isDeleted = user?.isDeleted;
+  if (isDeleted) {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted!');
+  }
+
+  // // checking the user is blocked
+
+  const userStatus = user?.status;
+  if (userStatus === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked!');
+  }
+
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string,
+  ) as JwtPayload;
+
+  if (!payLoad.id === decoded.userId) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Yor are forbidden!');
+  }
+
+  // hash new password
+
+  const newHashedPassword = await bcrypt.hash(
+    payLoad.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+
+  await User.findOneAndUpdate(
+    {
+      id: decoded.userId,
+      role: decoded.role,
+    },
+    {
+      password: newHashedPassword,
+      needsPasswordChange: false,
+      passwordChangedAt: new Date(),
+    },
+  );
+  console.log(decoded);
 };
 
 export const AuthServices = {
@@ -205,4 +259,5 @@ export const AuthServices = {
   changePassword,
   refreshToken,
   forgetPassword,
+  resetPassword,
 };
