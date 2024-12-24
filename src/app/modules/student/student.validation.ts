@@ -7,7 +7,7 @@ const createUserNameValidationSchema = z.object({
     .min(1, { message: 'First name is required' })
     .max(20, { message: 'Max length is 20' })
     .trim(),
-  midName: z.string(),
+  middleName: z.string(),
   lastName: z.string(),
 });
 

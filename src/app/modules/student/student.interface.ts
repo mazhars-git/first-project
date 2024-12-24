@@ -2,7 +2,7 @@ import { Model, Types } from 'mongoose';
 
 export type TUserName = {
   firstName: string;
-  midName?: string;
+  middleName?: string;
   lastName: string;
 };
 export type TGuardian = {

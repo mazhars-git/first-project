@@ -22,7 +22,7 @@ const userNameSchema = new Schema<TUserName>({
     // },
     message: `{VaLUE} is not in proper format`,
   },
-  midName: {
+  middleName: {
     type: String,
     trim: true,
   },
