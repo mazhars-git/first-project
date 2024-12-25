@@ -2,11 +2,16 @@ import { UserServices } from './user.service';
 import sendResponse from '../../utils/sendRes';
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
-import AppError from '../../errors/appErrors';
 
 const createStudent = catchAsync(async (req, res) => {
+  // console.log(req.file, 'file');
+
   const { password, student: studentData } = req.body;
-  const result = await UserServices.createStudentIntoDB(password, studentData);
+  const result = await UserServices.createStudentIntoDB(
+    req.file,
+    password,
+    studentData,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -38,11 +43,6 @@ const createAdmin = catchAsync(async (req, res) => {
 });
 
 const getMe = catchAsync(async (req, res) => {
-  // const token = req.headers.authorization;
-  // if (!token) {
-  //   throw new AppError(httpStatus.NOT_FOUND, 'Token not found!');
-  // }
-
   const { userId, role } = req.user;
   const result = await UserServices.getMe(userId, role);
   sendResponse(res, {

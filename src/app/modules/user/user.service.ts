@@ -18,8 +18,14 @@ import { TFaculty } from '../Faculty/faculty.interface';
 import { Admin } from '../Admin/admin.model';
 import { TAdmin } from '../Admin/admin.interface';
 import { verifyToken } from '../Auth/auth.utils';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
-const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
+const createStudentIntoDB = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  file: any,
+  password: string,
+  payLoad: TStudent,
+) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
@@ -42,6 +48,11 @@ const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
     // set manually generated id
     userData.id = await generateStudentId(admissionSemester);
 
+    const imageName = `${userData.id}${payLoad.name.firstName}`;
+    const path = file?.path;
+    // send image to cloudinary
+    const { secure_url } = await sendImageToCloudinary(imageName, path);
+
     // create a user model
     const newUser = await User.create([userData], { session });
 
@@ -52,6 +63,7 @@ const createStudentIntoDB = async (password: string, payLoad: TStudent) => {
     {
       payLoad.id = newUser[0].id;
       payLoad.user = newUser[0]._id; // reference _id
+      payLoad.profileImg = secure_url;
 
       const newStudent = await Student.create([payLoad], { session });
       if (!newStudent.length) {
@@ -200,8 +212,8 @@ const getMe = async (userId: string, role: string) => {
   return result;
 };
 
-const changeStatus = async (id: string, payLoad: { status: string }) => {
-  const result = await User.findByIdAndUpdate(id, payLoad, { new: true });
+const changeStatus = async (id: string, payload: { status: string }) => {
+  const result = await User.findByIdAndUpdate(id, payload, { new: true });
   return result;
 };
 
