@@ -3,7 +3,7 @@ import { Days } from './offeredCourse.constant';
 
 const timeStringSchema = z.string().refine(
   (time) => {
-    const regex = /^([01]?[0-9] | 2[0-3]): [0-5][0-9]$/;
+    const regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
     return regex.test(time);
   },
   {

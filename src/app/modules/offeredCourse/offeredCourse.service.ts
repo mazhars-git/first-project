@@ -6,6 +6,9 @@ import { TOfferedCourse } from './offeredCourse.interface';
 import { OfferedCourse } from './offeredCourse.model';
 import { hasTimeConflict } from './OfferedCourse.utils';
 import { Faculty } from '../Faculty/faculty.model';
+import { Course } from '../Course/course.model';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { AcademicFaculty } from '../academicFaculty/academicFaculty.model';
 
 const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
   const {
@@ -35,7 +38,7 @@ const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
 
   // if academic faculty is exists
   const isAcademicFacultyExists =
-    await SemesterRegistration.findById(academicFaculty);
+    await AcademicFaculty.findById(academicFaculty);
 
   if (!isAcademicFacultyExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'Academic Faculty is not found!');
@@ -43,7 +46,7 @@ const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
 
   // if academic department is exists
   const isAcademicDepartmentExists =
-    await SemesterRegistration.findById(academicDepartment);
+    await AcademicDepartment.findById(academicDepartment);
 
   if (!isAcademicDepartmentExists) {
     throw new AppError(
@@ -53,13 +56,13 @@ const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
   }
 
   // if course is exists
-  const isCourseExists = await SemesterRegistration.findById(course);
+  const isCourseExists = await Course.findById(course);
 
   if (!isCourseExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'Course is not found!');
   }
   // if course is exists
-  const isFacultyExists = await SemesterRegistration.findById(faculty);
+  const isFacultyExists = await Faculty.findById(faculty);
 
   if (!isFacultyExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'Faculty is not found!');
@@ -118,7 +121,16 @@ const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
   return result;
 };
 
-const getAllOfferedCourseFromDB = async (query: Record<string, unknown>) => {};
+const getAllOfferedCourseFromDB = async (query: Record<string, unknown>) => {
+  const offeredCourseQuery = new QueryBuilder(OfferedCourse.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await offeredCourseQuery.modelQuery;
+  return result;
+};
 
 const updateOfferedCourseIntoDB = async (
   id: string,

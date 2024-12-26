@@ -5,10 +5,12 @@ import { OfferedCourseController } from './offeredCourse.controller';
 const router = express.Router();
 
 router.post(
-  '/offered-course',
+  '/create-offered-course',
   validateRequest(OfferedCourseValidations.createOfferedCourseValidationSchema),
   OfferedCourseController.createOfferedCourse,
 );
+
+router.get('/', OfferedCourseController.getAllOfferedCourse);
 
 router.patch(
   '/:id',
