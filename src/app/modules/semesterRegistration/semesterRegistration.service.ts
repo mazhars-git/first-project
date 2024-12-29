@@ -5,6 +5,8 @@ import { TSemesterRegistration } from './semesterRegistration.interface';
 import { SemesterRegistration } from './semesterRegistration.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { RegistrationStatus } from './semesterRegistration.constant';
+import mongoose from 'mongoose';
+import { OfferedCourse } from '../offeredCourse/offeredCourse.model';
 
 const createSemesterRegistrationIntoDB = async (
   payLoad: TSemesterRegistration,
@@ -77,9 +79,19 @@ const updateSemesterRegistrationIntoDB = async (
   id: string,
   payLoad: Partial<TSemesterRegistration>,
 ) => {
-  const isSemesterRegistrationExists = await SemesterRegistration.findOne({
-    id,
-  });
+  /**
+   * Step1: Check if the semester is exist
+   * Step2: Check if the requested registered semester is exists
+   * Step3: If the requested semester registration is ended, we will not update anything
+   * Step4: If the requested semester registration is 'UPCOMING', we will let update everything.
+   * Step5: If the requested semester registration is 'ONGOING', we will not update anything  except status to 'ENDED'
+   * Step6: If the requested semester registration is 'ENDED' , we will not update anything
+   *
+   * UPCOMING --> ONGOING --> ENDED
+   *
+   */
+
+  const isSemesterRegistrationExists = await SemesterRegistration.findById(id);
 
   if (!isSemesterRegistrationExists) {
     throw new AppError(httpStatus.NOT_FOUND, 'This semester is not found!');
@@ -97,7 +109,7 @@ const updateSemesterRegistrationIntoDB = async (
     );
   }
 
-  //
+  // UPCOMING --> ONGOING --> ENDED
 
   if (
     currentSemesterStatus === RegistrationStatus.UPCOMING &&
@@ -126,9 +138,60 @@ const updateSemesterRegistrationIntoDB = async (
   return result;
 };
 
+const deleteSemesterRegistrationFromDB = async (id: string) => {
+  // if semester registration is exists
+  const isSemesterRegistrationExists = await SemesterRegistration.findById(id);
+
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'This registered semester is not found!',
+    );
+  }
+
+  const session = await mongoose.startSession();
+
+  // deleting registered semester course
+
+  try {
+    session.startTransaction();
+
+    const deleteOfferedCourse = await OfferedCourse.deleteMany(
+      { semesterRegistration: id },
+      { session },
+    );
+
+    if (!deleteOfferedCourse) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to delete semester registration !',
+      );
+    }
+
+    const deleteSemesterRegistration =
+      await SemesterRegistration.findByIdAndDelete(id, { session, new: true });
+
+    if (!deleteSemesterRegistration) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to delete semester registration !',
+      );
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+    return null;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
+
 export const SemesterRegistrationServices = {
   createSemesterRegistrationIntoDB,
   getAllSemesterRegistrationFromDB,
   getSingleSemesterRegistrationFromDB,
   updateSemesterRegistrationIntoDB,
+  deleteSemesterRegistrationFromDB,
 };
