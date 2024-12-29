@@ -9,6 +9,7 @@ import { Faculty } from '../Faculty/faculty.model';
 import { Course } from '../Course/course.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { AcademicFaculty } from '../academicFaculty/academicFaculty.model';
+import { Student } from '../student/student.model';
 
 const createOfferedCourseIntoDB = async (payLoad: TOfferedCourse) => {
   const {
@@ -129,8 +130,28 @@ const getAllOfferedCourseFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await offeredCourseQuery.modelQuery;
-  return result;
+  const meta = await offeredCourseQuery.countTotal();
+  return { meta, result };
 };
+
+const getMyOfferedCourseFromDB = async (userId: string) => {
+  // find the student
+
+  const student = await Student.findOne({ id: userId });
+  if (!student) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User is not found!');
+  }
+
+  //find current ongoing semester
+
+  const currentOngoingSemester = await SemesterRegistration.findOne({
+    status: 'ONGOING',
+  });
+
+  return currentOngoingSemester;
+};
+
+const getSingleOfferedCourseFromDB = async (id: string) => {};
 
 const updateOfferedCourseIntoDB = async (
   id: string,
@@ -189,6 +210,8 @@ const updateOfferedCourseIntoDB = async (
 
 export const OfferedCourseServices = {
   createOfferedCourseIntoDB,
+  getMyOfferedCourseFromDB,
   getAllOfferedCourseFromDB,
+  getSingleOfferedCourseFromDB,
   updateOfferedCourseIntoDB,
 };
