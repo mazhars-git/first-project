@@ -36,9 +36,27 @@ const createStudentIntoDB = async (
   userData.role = 'student';
   userData.email = payLoad.email;
 
+  // find admission semester
+
   const admissionSemester = await AcademicSemester.findById(
     payLoad.admissionSemester,
   );
+
+  if (!admissionSemester) {
+    throw new AppError(400, 'Admission semester not found!');
+  }
+
+  // find academic department
+
+  const academicDepartment = await AcademicDepartment.findById(
+    payLoad.academicDepartment,
+  );
+
+  if (!academicDepartment) {
+    throw new AppError(400, 'Academic department not found!');
+  }
+
+  payLoad.academicFaculty = academicDepartment?.academicFaculty;
 
   const session = await mongoose.startSession();
 
@@ -47,10 +65,15 @@ const createStudentIntoDB = async (
     // set manually generated id
     userData.id = await generateStudentId(admissionSemester);
 
-    const imageName = `${userData.id}${payLoad.name.firstName}`;
-    const path = file?.path;
-    // send image to cloudinary
-    const { secure_url } = await sendImageToCloudinary(imageName, path);
+    if (file) {
+      const imageName = `${userData.id}${payLoad?.name?.firstName}`;
+      const path = file?.path;
+
+      // send image to cloudinary
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+
+      payLoad.profileImg = secure_url as string;
+    }
 
     // create a user model
     const newUser = await User.create([userData], { session });
@@ -62,7 +85,6 @@ const createStudentIntoDB = async (
     {
       payLoad.id = newUser[0].id;
       payLoad.user = newUser[0]._id; // reference _id
-      payLoad.profileImg = secure_url;
 
       const newStudent = await Student.create([payLoad], { session });
       if (!newStudent.length) {
@@ -74,6 +96,7 @@ const createStudentIntoDB = async (
 
       return newStudent;
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
@@ -83,7 +106,11 @@ const createStudentIntoDB = async (
 
 // create faculty
 
-const createFacultyIntoDB = async (password: string, payLoad: TFaculty) => {
+const createFacultyIntoDB = async (
+  file: any,
+  password: string,
+  payLoad: TFaculty,
+) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
@@ -109,6 +136,15 @@ const createFacultyIntoDB = async (password: string, payLoad: TFaculty) => {
     session.startTransaction();
     //set  generated id
     userData.id = await generateFacultyId();
+
+    if (file) {
+      const imageName = `${userData.id}${payLoad?.name?.firstName}`;
+      const path = file?.path;
+
+      // send image to cloudinary
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+      payLoad.profileImg = secure_url as string;
+    }
 
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session }); // array
@@ -142,7 +178,11 @@ const createFacultyIntoDB = async (password: string, payLoad: TFaculty) => {
 
 // create admin into db
 
-const createAdminIntoDB = async (password: string, payLoad: TAdmin) => {
+const createAdminIntoDB = async (
+  file: any,
+  password: string,
+  payLoad: TAdmin,
+) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
@@ -159,6 +199,15 @@ const createAdminIntoDB = async (password: string, payLoad: TAdmin) => {
     session.startTransaction();
     //set  generated id
     userData.id = await generateAdminId();
+
+    if (file) {
+      const imageName = `${userData.id}${payLoad?.name?.firstName}`;
+      const path = file?.path;
+
+      // send image to cloudinary
+      const { secure_url } = await sendImageToCloudinary(imageName, path);
+      payLoad.profileImg = secure_url as string;
+    }
 
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session });
@@ -192,10 +241,6 @@ const createAdminIntoDB = async (password: string, payLoad: TAdmin) => {
 // get me
 
 const getMe = async (userId: string, role: string) => {
-  // const decoded = verifyToken(token, config.jwt_access_secret as string);
-  // const { userId, role } = decoded;
-  // console.log(userId, role);
-
   let result = null;
   if (role === 'student') {
     result = await Student.findOne({ id: userId }).populate('user');

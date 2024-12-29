@@ -16,10 +16,6 @@ const userNameSchema = new Schema<TUserName>({
     required: [true, 'first name is required'],
     trim: true,
     maxlength: [20, 'Max length is 20'],
-    // validate: function (value: string) {
-    //   const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
-    //   return firstNameStr === value;
-    // },
     message: `{VaLUE} is not in proper format`,
   },
   middleName: {
@@ -30,10 +26,6 @@ const userNameSchema = new Schema<TUserName>({
     type: String,
     trim: true,
     required: [true, 'first name is required'],
-    // validate: {
-    //   validator: (value: string) => validator.isAlpha(value),
-    //   message: `{VALUE} is not valid`,
-    // },
   },
 });
 
@@ -98,7 +90,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: localGuardianSchema,
       required: true,
     },
-    profileImg: { type: String },
+    profileImg: { type: String, default: '' },
     admissionSemester: {
       type: Schema.Types.ObjectId,
       ref: 'AcademicSemester',
@@ -110,6 +102,10 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     academicDepartment: {
       type: Schema.Types.ObjectId,
       ref: 'AcademicDepartment',
+    },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicFaculty',
     },
   },
   {

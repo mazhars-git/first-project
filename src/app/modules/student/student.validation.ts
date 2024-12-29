@@ -66,13 +66,11 @@ export const createStudentValidationSchema = z.object({
       guardian: createGuardianValidationSchema,
       localGuardian: createLocalGuardianValidationSchema,
       admissionSemester: z.string(),
-      // profileImg: z.string().optional(),
       academicDepartment: z.string(),
     }),
   }),
 });
 
-// Update Validation Schema
 // Update Validation Schema
 const updateUserNameValidationSchema = z.object({
   firstName: z.string().min(1).max(20).optional(),
@@ -135,7 +133,6 @@ export const updateStudentValidationSchema = z.object({
       guardian: updateGuardianValidationSchema,
       localGuardian: updateLocalGuardianValidationSchema,
       admissionSemester: z.string().optional(),
-      profileImg: z.string().optional(),
       academicDepartment: z.string().optional(),
     }),
   }),
