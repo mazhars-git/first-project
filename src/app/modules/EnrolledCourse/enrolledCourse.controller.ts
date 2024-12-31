@@ -4,7 +4,7 @@ import httpStatus from 'http-status';
 import { EnrolledCourseServices } from './enrolledCourse.service';
 
 const createEnrolledCourse = catchAsync(async (req, res) => {
-  const userId = req.body.userId;
+  const userId = req.user.userId;
 
   const result = await EnrolledCourseServices.createEnrolledCourseIntoDB(
     userId,
@@ -13,7 +13,7 @@ const createEnrolledCourse = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Student is created successfully',
+    message: 'Student is enrolled successfully',
     data: result,
   });
 });
@@ -28,7 +28,7 @@ const updateEnrolledCourseMarks = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Student is created successfully',
+    message: 'Enrolled student is updated successfully',
     data: result,
   });
 });

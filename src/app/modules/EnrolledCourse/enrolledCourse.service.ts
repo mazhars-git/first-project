@@ -2,7 +2,7 @@ import AppError from '../../errors/appErrors';
 import httpStatus from 'http-status';
 import { OfferedCourse } from '../offeredCourse/offeredCourse.model';
 import { TEnrolledCourse } from './enrolledCourse.interface';
-import EnrolledCourse from './enrolledCourse.model';
+import { EnrolledCourse } from './enrolledCourse.model';
 import { Student } from '../student/student.model';
 import mongoose from 'mongoose';
 import { SemesterRegistration } from '../semesterRegistration/semesterRegistration.model';
@@ -149,9 +149,9 @@ const createEnrolledCourseIntoDB = async (
 
 const updateEnrolledCourseMarksIntoDB = async (
   facultyId: string,
-  payLoad: Partial<TEnrolledCourse>,
+  payload: Partial<TEnrolledCourse>,
 ) => {
-  const { semesterRegistration, offeredCourse, student, courseMarks } = payLoad;
+  const { semesterRegistration, offeredCourse, student, courseMarks } = payload;
   const isSemesterRegistrationExists =
     await SemesterRegistration.findById(semesterRegistration);
   if (!isSemesterRegistrationExists) {
@@ -198,10 +198,10 @@ const updateEnrolledCourseMarksIntoDB = async (
       isCourseBelongToFaculty.courseMarks;
 
     const totalMarks =
-      Math.ceil(classTest1 * 0.1) +
-      Math.ceil(midTerm * 0.3) +
-      Math.ceil(classTest2 * 0.1) +
-      Math.ceil(finalTerm * 0.5);
+      Math.ceil(classTest1) +
+      Math.ceil(midTerm) +
+      Math.ceil(classTest2) +
+      Math.ceil(finalTerm);
 
     const result = calculateGradeAndPoints(totalMarks);
 
